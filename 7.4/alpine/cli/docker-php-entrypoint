@@ -1,6 +1,8 @@
+#!/bin/sh
+
 set -e
 
-read_env_config() {
+write_env_config() {
     prefix=$1
     output=$2
 
@@ -9,6 +11,6 @@ read_env_config() {
     done
 }
 
-read_env_config PHP $PHP_INI_DIR/conf.d/zz-docker-env.ini
+write_env_config PHP $PHP_INI_DIR/conf.d/zz-docker-env.ini
 
-exec docker-php-entrypoint "$@"
+exec docker-php-entrypoint-base "$@"

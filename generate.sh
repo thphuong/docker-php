@@ -65,8 +65,16 @@ cat "$variant-Dockerfile.template" >> $dockerfile
 cp -rT "config/$php_variant" "$dir/config"
 
 # Entrypoint
-cp "php-$php_variant-entrypoint" "$dir"
-write_shebang "$dir/php-$php_variant-entrypoint"
+entrypoint="$dir/docker-php-entrypoint"
+
+cp docker-php-entrypoint.template "$entrypoint"
+
+if [ "$php_variant" = fpm ]; then
+    cat docker-php-entrypoint-fpm.template >> "$entrypoint"
+fi
+
+cat docker-php-entrypoint-exec.template >> "$entrypoint"
+write_shebang "$entrypoint"
 
 # Variant specific files
 if [ -d "$variant" ]; then
@@ -75,8 +83,8 @@ fi
 
 # FPM
 if [ "$variant" = fpm ]; then
-    cp php-fpm-healthcheck "$dir"
-    write_shebang "$dir/php-fpm-healthcheck"
+    cp docker-php-fpm-healthcheck "$dir"
+    write_shebang "$dir/docker-php-fpm-healthcheck"
 fi
 
 # Nginx
